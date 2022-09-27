@@ -55,7 +55,8 @@ def simple_visualizer(
             cur_point_list[:, 2], 
             c=color_dict[cur_label]
         )
-
+    plt.xlabel('x')
+    plt.ylabel('y')
     plt.show()
 
 

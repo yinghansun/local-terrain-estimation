@@ -4,20 +4,51 @@ import sys
 cur_path = os.path.dirname(__file__)
 sys.path.append(os.path.join(cur_path, '../data/basic_shapes'))
 
-from typing import Union
+from typing import Optional, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
 
 from basic_shapes_utils import PlaneLabel, create_stairs
-from sklearn.cluster import k_means
 
 
-def simple_visualizer(
-    point_cloud_with_label: Union[list, np.ndarray],
-    color_dict: dict
+def visualize_pc_no_color(
+    point_cloud: np.ndarray, 
+    scale: Optional[tuple] = (1, 1, 1)
 ) -> None:
     '''A simple visualizer for point clouds.
+
+    Paras
+    -----
+    point_cloud: {list, np.ndarray} with shape (num_points, 3)
+        The point cloud to visualize. The columns represent the xyz coordinate 
+        of each points, respectively
+    scale: tuple
+        # TODO.
+    '''
+    assert type(point_cloud) == list or \
+        type(point_cloud) == np.ndarray
+    if type(point_cloud) == np.ndarray:
+        assert len(point_cloud.shape) == 2
+        assert point_cloud.shape[1] == 3
+    else:
+        # TODO: check format
+        point_cloud = np.array(point_cloud)
+
+    ax = plt.figure().add_subplot(111, projection='3d')
+    ax.scatter(point_cloud[:, 0], point_cloud[:, 1], point_cloud[:, 2])
+    plt.gca().set_box_aspect(scale)
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.show()
+
+
+def visualize_pc_color(
+    point_cloud_with_label: Union[list, np.ndarray],
+    color_dict: dict,
+    scale: Optional[tuple] = (1, 1, 1)
+) -> None:
+    '''A simple visualizer for point clouds and labels.
 
     Paras
     -----
@@ -27,6 +58,8 @@ def simple_visualizer(
         the label of each point. 
     color_dict: dict
         A dictionary records the color for each label.
+    scale: tuple
+        # TODO.
     '''
     assert type(point_cloud_with_label) == list or \
         type(point_cloud_with_label) == np.ndarray
@@ -34,12 +67,14 @@ def simple_visualizer(
         assert len(point_cloud_with_label.shape) == 2
         assert point_cloud_with_label.shape[1] == 4
         point_cloud_with_label = point_cloud_with_label.tolist()
+    else:
+        # TODO: check format
+        pass
 
     num_labels = len(color_dict)
     label_list = list(color_dict.keys())
 
-    fig = plt.figure('3D scatter plot')
-    ax = fig.add_subplot(111, projection='3d')
+    ax = plt.figure().add_subplot(111, projection='3d')
 
     for idx in range(num_labels):
         cur_label = label_list[idx]
@@ -68,4 +103,5 @@ if __name__ == '__main__':
 
     stair1 = create_stairs(num_steps=7, length=0.128, width=1.2, height=0.125, label=True)
 
-    simple_visualizer(stair1, color_dict)
+    visualize_pc_no_color(stair1[:, 0:3])
+    visualize_pc_color(stair1, color_dict)

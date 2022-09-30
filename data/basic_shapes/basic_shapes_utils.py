@@ -1,4 +1,7 @@
-from enum import Enum
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+
 import math
 from typing import List, Optional
 
@@ -6,29 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.linalg as linalg
 
-
-class PlaneLabel(Enum):
-    horizontal = 'horizontal', 0, 'red'
-    vertical = 'vertical', 1, 'blue'
-    sloping = 'sloping', 2, 'green'
-    others = 'others', 3, 'yellow'
-
-    def __init__(self, name: str, label: int, color: str) -> None:
-        self.__name = name
-        self.__label = label
-        self.__color = color
-
-    @property
-    def name(self):
-        return self.__name
-
-    @property
-    def label(self):
-        return self.__label
-
-    @property
-    def color(self):
-        return self.__color
+from label import PlaneLabel
 
 
 def create_horizontal_plane(

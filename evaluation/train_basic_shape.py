@@ -11,6 +11,13 @@ from BasicShapeDataloaderInterface import PointcloudDataset
 from pointnet2_sem_seg import PointNet2, PointNet2Loss
 
 
+# # see https://github.com/pyg-team/pytorch_geometric/issues/366
+# # PLATFORM = 'windows'
+# PLATFORM = 'ubuntu'  # {'windows', 'ubuntu'}
+# NUM_WORKERS = 0 if PLATFORM == 'windows' else 10
+NUM_WORKERS = 10
+
+
 NUM_CLASSES = 2
 NUM_EPOCH = 128
 BATCH_SIZE = 16
@@ -58,7 +65,7 @@ def main():
         train_set,
         batch_size=BATCH_SIZE,
         shuffle=True,
-        num_workers=10,
+        num_workers=NUM_WORKERS,
         pin_memory=True,
         drop_last=True,
         worker_init_fn=lambda x: np.random.seed(x + int(time.time()))
@@ -68,7 +75,7 @@ def main():
         test_set, 
         batch_size=BATCH_SIZE, 
         shuffle=False, 
-        num_workers=10,
+        num_workers=NUM_WORKERS,
         pin_memory=True, 
         drop_last=True
     )

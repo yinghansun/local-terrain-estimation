@@ -3,8 +3,8 @@ from enum import Enum
 class PlaneLabel(Enum):
     horizontal = 'horizontal', 0, 'red'
     vertical = 'vertical', 1, 'blue'
-    sloping = 'sloping', 2, 'green'
-    others = 'others', 3, 'yellow'
+    # sloping = 'sloping', 2, 'green'
+    others = 'others', 2, 'yellow'
 
     def __init__(self, name: str, label: int, color: str) -> None:
         self.__name = name

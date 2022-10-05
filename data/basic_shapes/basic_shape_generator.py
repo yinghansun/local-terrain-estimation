@@ -28,7 +28,8 @@ np.save(data_root_path + 'stair2.npy', stair2)
 def generate_boxes_only(
     num_boxes: int,
     visualize: Optional[bool] = False,
-    save: Optional[bool] = False
+    save: Optional[bool] = False,
+    root_path: Optional[str] = None,
 ):
 
     for i in range(num_boxes):
@@ -63,8 +64,10 @@ def generate_boxes_only(
         if visualize:
             visualize_pointlist(box_i)
         if save:
-            np.save(data_root_path + name, box_i)
+            np.save(root_path + name, box_i)
 
 
 if __name__ == '__main__':
-    generate_boxes_only(100, save=False)
+    # generate_boxes_only(100, save=False)
+    generate_boxes_only(100, save=True, root_path=train_path)
+    generate_boxes_only(100, save=True, root_path=test_path)

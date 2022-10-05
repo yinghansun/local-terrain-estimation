@@ -18,7 +18,7 @@ from pointnet2_sem_seg import PointNet2, PointNet2Loss
 NUM_WORKERS = 10
 
 
-NUM_CLASSES = 2
+NUM_CLASSES = 3
 NUM_EPOCH = 128
 BATCH_SIZE = 16
 LEARNING_RATE = 0.001
@@ -57,9 +57,9 @@ def weights_init(m):
 def main():
     cur_path = os.path.dirname(os.path.abspath(__file__))
     train_root_path = cur_path + '/../data/basic_shapes/dataset/train/'
-    train_set = PointcloudDataset(train_root_path, 2, 'train')
+    train_set = PointcloudDataset(train_root_path, NUM_CLASSES, 'train')
     test_root_path = cur_path + '/../data/basic_shapes/dataset/test/'
-    test_set = PointcloudDataset(test_root_path, 2, 'test')
+    test_set = PointcloudDataset(test_root_path, NUM_CLASSES, 'test')
 
     train_data_loader = torch.utils.data.DataLoader(
         train_set,

@@ -111,7 +111,7 @@ class PointcloudDataset(Dataset):
 def test():
     cur_path = os.path.dirname(os.path.abspath(__file__))
     data_root_path = cur_path + '/../data/basic_shapes/dataset/train/'
-    dataset = PointcloudDataset(data_root_path, 2, 'train')
+    dataset = PointcloudDataset(data_root_path, 3, 'train')
     print('point data size:', dataset.__len__())
     print('point data 0 shape:', dataset.__getitem__(0)[0].shape)
     print('point label 0 shape:', dataset.__getitem__(0)[1].shape)
@@ -124,8 +124,8 @@ def test():
     torch.cuda.manual_seed_all(manual_seed)
     def worker_init_fn(worker_id):
         random.seed(manual_seed + worker_id)
-    # train_loader = torch.utils.data.DataLoader(dataset, batch_size=16, shuffle=True, num_workers=10, pin_memory=True, worker_init_fn=worker_init_fn)
-    train_loader = torch.utils.data.DataLoader(dataset, batch_size=16, shuffle=True, num_workers=10, pin_memory=True)
+    train_loader = torch.utils.data.DataLoader(dataset, batch_size=16, shuffle=True, num_workers=10, pin_memory=True, worker_init_fn=worker_init_fn)
+    # train_loader = torch.utils.data.DataLoader(dataset, batch_size=16, shuffle=True, num_workers=10, pin_memory=True)
     for idx in range(4):
         end = time.time()
         for i, (input, target) in enumerate(train_loader):

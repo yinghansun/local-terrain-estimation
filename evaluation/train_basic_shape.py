@@ -1,3 +1,4 @@
+import datetime
 import os
 import sys
 import time
@@ -9,6 +10,21 @@ import torch
 
 from BasicShapeDataloaderInterface import PointcloudDataset
 from pointnet2_sem_seg import PointNet2, PointNet2Loss
+
+
+cur_path = os.path.dirname(os.path.abspath(__file__))
+result_root_path = cur_path + '/results/'
+date = datetime.date.today()
+model = 'pointnet2'
+num_experiments = '1'
+folder_name = str(date) + '-' + model + '-' + num_experiments
+save_path = result_root_path + folder_name
+
+if not os.path.exists(result_root_path):
+    os.mkdir(result_root_path)
+if not os.path.exists(save_path):
+    os.mkdir(save_path)
+
 
 
 # # see https://github.com/pyg-team/pytorch_geometric/issues/366
@@ -194,6 +210,9 @@ def main():
             print('eval point accuracy: %f' % (total_correct / float(total_seen)))
             print('eval point avg class acc: %f' % (
                 np.mean(np.array(total_correct_class) / (np.array(total_seen_class, dtype=np.float) + 1e-6))))
+
+            
+            torch.save(classifier.state_dict(), save_path + '/para_dic.pth')
 
     
 

@@ -23,7 +23,7 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 cur_path = os.path.dirname(os.path.abspath(__file__))
 model_path = cur_path + '/../model/'
 # model_name = 'test_para_dict.pth'
-model_name = 'para_dic1010.pth'
+model_name = 'para_dic1010_2.pth'
 
 state_dict = torch.load(model_path + model_name)
 # print(state_dict)

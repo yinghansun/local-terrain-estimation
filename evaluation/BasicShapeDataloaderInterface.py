@@ -134,13 +134,13 @@ class PointcloudDataset(Dataset):
         center = np.mean(selected_points, axis=0)
         # normalize
         # selected_points = points[selected_point_idxs, :]  # num_point * 3
-        current_points = np.zeros((self.__num_points, 9))  # num_point * 9
-        current_points[:, 6] = selected_points[:, 0] / self.__coor_max[data_idx][0]
-        current_points[:, 7] = selected_points[:, 1] / self.__coor_max[data_idx][1]
-        current_points[:, 8] = selected_points[:, 2] / self.__coor_max[data_idx][2]
-        current_points[:, 3] = np.zeros((self.__num_points, ))
-        current_points[:, 4] = np.zeros((self.__num_points, ))
-        current_points[:, 5] = np.zeros((self.__num_points, ))
+        current_points = np.zeros((self.__num_points, 6))  # num_point * 6
+        current_points[:, 3] = selected_points[:, 0] / self.__coor_max[data_idx][0]
+        current_points[:, 4] = selected_points[:, 1] / self.__coor_max[data_idx][1]
+        current_points[:, 5] = selected_points[:, 2] / self.__coor_max[data_idx][2]
+        # current_points[:, 3] = np.zeros((self.__num_points, ))
+        # current_points[:, 4] = np.zeros((self.__num_points, ))
+        # current_points[:, 5] = np.zeros((self.__num_points, ))
         selected_points[:, 0] = selected_points[:, 0] - center[0]
         selected_points[:, 1] = selected_points[:, 1] - center[1]
         current_points[:, 0:3] = selected_points

@@ -22,7 +22,8 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 cur_path = os.path.dirname(os.path.abspath(__file__))
 model_path = cur_path + '/../model/'
-model_name = 'test_para_dict.pth'
+# model_name = 'test_para_dict.pth'
+model_name = 'para_dic1010.pth'
 
 state_dict = torch.load(model_path + model_name)
 # print(state_dict)
@@ -67,7 +68,7 @@ classifier.eval()
 color_dict = {
     PlaneLabel.horizontal.label: PlaneLabel.horizontal.color,
     PlaneLabel.vertical.label: PlaneLabel.vertical.color,
-    # PlaneLabel.others.label: PlaneLabel.others.color
+    PlaneLabel.others.label: PlaneLabel.others.color
 }
 
 BATCH_SIZE = 1

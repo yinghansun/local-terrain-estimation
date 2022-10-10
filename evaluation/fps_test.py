@@ -26,7 +26,9 @@ def downsample_pcl(batch_pcl, num):
         batch_pcl = torch.from_numpy(batch_pcl)
 
     ids = farthest_point_sampler(batch_pcl, num)
+    print(ids)
     ids = ids.unsqueeze(-1).repeat(1, 1, 3)
+    print(ids)
     out = torch.gather(batch_pcl, 1, ids)
     if is_numpy:
         out = out.numpy()

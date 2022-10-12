@@ -9,6 +9,7 @@ import numpy as np
 import torch
 
 from BasicShapeDataloaderInterface import PointcloudDataset
+from hyper_paras import *
 from pointnet2_sem_seg import PointNet2, PointNet2Loss
 
 
@@ -24,29 +25,6 @@ if not os.path.exists(result_root_path):
     os.mkdir(result_root_path)
 if not os.path.exists(save_path):
     os.mkdir(save_path)
-
-
-
-# # see https://github.com/pyg-team/pytorch_geometric/issues/366
-# # PLATFORM = 'windows'
-# PLATFORM = 'ubuntu'  # {'windows', 'ubuntu'}
-# NUM_WORKERS = 0 if PLATFORM == 'windows' else 10
-NUM_WORKERS = 10
-
-
-NUM_CLASSES = 3
-NUM_EPOCH = 128
-BATCH_SIZE = 16
-LEARNING_RATE = 0.001
-DECAY_RATE = 1e-4
-LEARNING_RATE_CLIP = 1e-5
-LEARNING_RATE_DECAY = 0.7
-MOMENTUM_ORIGINAL = 0.1
-MOMENTUM_DECCAY = 0.5
-MOMENTUM_DECCAY_STEP = 10
-
-DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-# DEVICE = torch.device('cpu')
 
 
 def inplace_relu(m):
@@ -115,6 +93,8 @@ def main():
     train_acc_list = []
     test_loss_list = []
     test_acc_list = []
+
+    eval_idx = 0
 
     for epoch in range(NUM_EPOCH):
         lr = max(LEARNING_RATE * (LEARNING_RATE_DECAY ** (epoch // MOMENTUM_DECCAY_STEP)), LEARNING_RATE_CLIP)
@@ -211,11 +191,9 @@ def main():
             print('eval point avg class acc: %f' % (
                 np.mean(np.array(total_correct_class) / (np.array(total_seen_class, dtype=np.float) + 1e-6))))
 
-            
-            torch.save(classifier.state_dict(), save_path + '/para_dic.pth')
+            torch.save(classifier.state_dict(), save_path + '/para_dic' + str(eval_idx) + '.pth')
+            eval_idx += 1
 
     
-
-
 if __name__ == '__main__':
     main()

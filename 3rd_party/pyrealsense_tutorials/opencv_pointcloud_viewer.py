@@ -272,6 +272,9 @@ def pointcloud(out, verts, texcoords, color, painter=True):
 
 out = np.empty((h, w, 3), dtype=np.uint8)
 
+
+idx = 0
+
 while True:
     # Grab camera data
     if not state.paused:
@@ -301,6 +304,7 @@ while True:
 
         points = pc.calculate(depth_frame)
         pc.map_to(mapped_frame)
+
 
         # Pointcloud data to arrays
         v, t = points.get_vertices(), points.get_texture_coordinates()
@@ -334,6 +338,8 @@ while True:
         state.WIN_NAME, "RealSense (%dx%d) %dFPS (%.2fms) %s" %
         (w, h, 1.0/dt, dt*1000, "PAUSED" if state.paused else ""))
 
+    print(verts.shape)
+
     cv2.imshow(state.WIN_NAME, out)
     key = cv2.waitKey(1)
 
@@ -357,7 +363,9 @@ while True:
         cv2.imwrite('./out.png', out)
 
     if key == ord("e"):
-        points.export_to_ply('./out.ply', mapped_frame)
+        # points.export_to_ply('./out.ply', mapped_frame)
+        np.save('data' + str(idx) + '.npy', verts)
+        idx += 1
 
     if key in (27, ord("q")) or cv2.getWindowProperty(state.WIN_NAME, cv2.WND_PROP_AUTOSIZE) < 0:
         break

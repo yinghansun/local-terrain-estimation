@@ -6,8 +6,42 @@
 ###############################################
 
 import cv2
+import math
 import numpy as np
 import pyrealsense2 as rs
+
+
+class AppState:
+
+    def __init__(self, *args, **kwargs):
+        self.WIN_NAME = 'RealSense'
+        self.pitch, self.yaw = math.radians(-10), math.radians(-15)
+        self.translation = np.array([0, 0, -1], dtype=np.float32)
+        self.distance = 2
+        self.prev_mouse = 0, 0
+        self.mouse_btns = [False, False, False]
+        self.paused = False
+        self.decimate = 1
+        self.scale = True
+        self.color = True
+
+    def reset(self):
+        self.pitch, self.yaw, self.distance = 0, 0, 2
+        self.translation[:] = 0, 0, -1
+
+    @property
+    def rotation(self):
+        Rx, _ = cv2.Rodrigues((self.pitch, 0, 0))
+        Ry, _ = cv2.Rodrigues((0, self.yaw, 0))
+        return np.dot(Ry, Rx).astype(np.float32)
+
+    @property
+    def pivot(self):
+        return self.translation + np.array((0, 0, self.distance), dtype=np.float32)
+
+
+state = AppState()
+
 
 # Configure depth and color streams
 pipeline = rs.pipeline()
@@ -31,6 +65,7 @@ if not found_rgb:
 config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
 
 if device_product_line == 'L500':
+    print(1)
     config.enable_stream(rs.stream.color, 960, 540, rs.format.bgr8, 30)
 else:
     config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
@@ -68,7 +103,9 @@ try:
         # Show images
         cv2.namedWindow('RealSense', cv2.WINDOW_AUTOSIZE)
         cv2.imshow('RealSense', images)
-        cv2.waitKey(1)
+        key = cv2.waitKey(1)
+        if key in (27, ord("q")) or cv2.getWindowProperty(state.WIN_NAME, cv2.WND_PROP_AUTOSIZE) < 0:
+            break
 
 finally:
 

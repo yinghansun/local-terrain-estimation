@@ -1,15 +1,16 @@
+import math
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
-
-import math
 from typing import List, Optional
 
-import matplotlib.pyplot as plt
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../visualization'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+
 import numpy as np
 import scipy.linalg as linalg
 
 from label import PlaneLabel
+from simple_visualizer import visualize_pc_no_color
 
 
 def create_horizontal_plane(
@@ -20,7 +21,7 @@ def create_horizontal_plane(
         z: float,
         scale: Optional[float] = 0.03,
         label: Optional[bool] = False,
-        visualization: Optional[bool] = False
+        visualize: Optional[bool] = False
 ) -> np.ndarray:
     num_points_x = int((x_upper - x_lower) / scale)
     num_points_y = int((y_upper - y_lower) / scale)
@@ -40,9 +41,9 @@ def create_horizontal_plane(
                 point_list[idx, 3] = PlaneLabel.horizontal.label
             idx += 1
 
-    if visualization:
+    if visualize:
         scale = (num_points_x, num_points_y, (num_points_x + num_points_y) / 2)
-        visualize_pointlist(point_list, scale=scale)
+        visualize_pc_no_color(point_list[:, 0:3], scale=scale)
 
     return point_list
 
@@ -55,7 +56,7 @@ def create_vertical_plane_xfixed(
         x: float,
         scale: Optional[float] = 0.03,
         label: Optional[bool] = False,
-        visualization: Optional[bool] = False
+        visualize: Optional[bool] = False
 ) -> np.ndarray:
     num_points_y = int((y_upper - y_lower) / scale)
     num_points_z = int((z_upper - z_lower) / scale)
@@ -75,9 +76,9 @@ def create_vertical_plane_xfixed(
                 point_list[idx, 3] = PlaneLabel.vertical.label
             idx += 1
 
-    if visualization:
+    if visualize:
         scale = ((num_points_y + num_points_z) / 2, num_points_y, num_points_z)
-        visualize_pointlist(point_list, scale=scale)
+        visualize_pc_no_color(point_list[:, 0:3], scale=scale)
 
     return point_list
 
@@ -90,7 +91,7 @@ def create_vertical_plane_yfixed(
         y: float,
         scale: Optional[float] = 0.03,
         label: Optional[bool] = False,
-        visualization: Optional[bool] = False
+        visualize: Optional[bool] = False
 ) -> np.ndarray:
     num_points_x = int((x_upper - x_lower) / scale)
     num_points_z = int((z_upper - z_lower) / scale)
@@ -110,9 +111,9 @@ def create_vertical_plane_yfixed(
                 point_list[idx, 3] = PlaneLabel.vertical.label
             idx += 1
 
-    if visualization:
+    if visualize:
         scale = (num_points_x, (num_points_x + num_points_z) / 2, num_points_z)
-        visualize_pointlist(point_list, scale=scale)
+        visualize_pc_no_color(point_list[:, 0:3], scale=scale)
 
     return point_list
 
@@ -126,10 +127,10 @@ def create_sloping_plane_xfixed(
         z_lower: float,
         scale: Optional[float] = 0.03,
         label: Optional[bool] = False,
-        visualization: Optional[bool] = False
+        visualize: Optional[bool] = False
 ) -> np.ndarray:
     """Create a sloping plane about x-axis by given two vertex:
-        (x_upper, y_upper, z_upper),(x_lower, y_lower, z_lower)
+    (x_upper, y_upper, z_upper), (x_lower, y_lower, z_lower)
     """
 
     sin = abs(z_upper - z_lower)/math.sqrt((y_upper - y_lower) ** 2 + (z_upper-z_lower) ** 2)
@@ -156,9 +157,9 @@ def create_sloping_plane_xfixed(
                 point_list[idx, 3] = PlaneLabel.sloping.label
             idx += 1
 
-    if visualization:
+    if visualize:
         scale = (num_points_x, num_points_yz, (num_points_x + num_points_yz) / 2)
-        visualize_pointlist(point_list, scale=scale)
+        visualize_pc_no_color(point_list[:, 0:3], scale=scale)
 
     return point_list
 
@@ -172,7 +173,7 @@ def create_sloping_plane_yfixed(
         z_lower: float,
         scale: Optional[float] = 0.03,
         label: Optional[bool] = False,
-        visualization: Optional[bool] = False
+        visualize: Optional[bool] = False
 ) -> np.ndarray:
     """Create a sloping plane about y-axis by given two vertex:
         (x_upper, y_upper, z_upper),(x_lower, y_lower, z_lower)
@@ -202,9 +203,9 @@ def create_sloping_plane_yfixed(
                 point_list[idx, 3] = PlaneLabel.sloping.label
             idx += 1
 
-    if visualization:
+    if visualize:
         scale = (num_points_y, num_points_xz, (num_points_y + num_points_xz) / 2)
-        visualize_pointlist(point_list, scale=scale)
+        visualize_pc_no_color(point_list[:, 0:3], scale=scale)
 
     return point_list
 
@@ -215,7 +216,7 @@ def create_sphere(
         centre_y: float,
         centre_z: float,
         label: Optional[bool] = False,
-        visualization: Optional[bool] = False
+        visualize: Optional[bool] = False
 ):
     """Create a sphere (base on polar coordinates)
     Paras:
@@ -244,9 +245,9 @@ def create_sphere(
                 point_list[idx, 3] = PlaneLabel.others.label
             idx += 1
 
-    if visualization:
+    if visualize:
         scale = (num_points_theta, num_points_beta, (num_points_theta + num_points_beta) / 2)
-        visualize_pointlist(point_list, scale=scale)
+        visualize_pc_no_color(point_list[:, 0:3], scale=scale)
 
     return point_list
 
@@ -258,7 +259,7 @@ def create_box(
         height: float,
         center: Optional[np.ndarray] = np.zeros(3),
         label: Optional[bool] = False,
-        visualization: Optional[bool] = False
+        visualize: Optional[bool] = False
 ) -> np.ndarray:
     z_top = center[2] + height / 2
     z_bottom = center[2] - height / 2
@@ -288,44 +289,61 @@ def create_box(
         point_list[pointer:pointer + list.shape[0], :] = list
         pointer += list.shape[0]
 
-    if visualization:
-        visualize_pointlist(point_list, scale=(1, 1, 1))
+    if visualize:
+        visualize_pc_no_color(point_list[:, 0:3], scale=(1, 1, 1))
 
     return point_list
 
 
-def create_stairs(
+def create_stair(
         num_steps: int,
-        length: float,
+        step_length: float,
         width: float,
-        height: float,
+        step_height: float,
+        init_height: Optional[float] = 0.,
         label: Optional[bool] = False,
-        visualization: Optional[bool] = False
+        visualize: Optional[bool] = False
 ) -> np.ndarray:
+    '''Create a stair by given parameters.
+
+    Args
+    ----
+    num_steps: int
+        number of steps of the stair
+    step_length: float
+        length per step.
+    width: float
+        width of the stair.
+    step_height: float
+        height per step.
+    init_height: (optional) float
+        initial height of the stair.
+    label: (optional) bool
+        whether the point cloud has label.
+    visualize: (optional) bool
+        whether to visualize the boxes or not.
+
+    Returns
+    -------
+    A stair point cloud (simulated ground truth point cloud).
     '''
-    Paras:
-    - num_steps: number of steps of the stair
-    - length: length per steps
-    - width: width per steps
-    - height: height per steps
-    '''
-    cur_height = 0
+    cur_height = init_height
     cur_length = 0
     point_list_list: List[np.ndarray] = []
     total_num_points = 0
 
     for _ in range(num_steps):
-        cur_vertical_pointlist = create_vertical_plane_xfixed(width / 2, -width / 2, cur_height + height, cur_height,
+        cur_vertical_pointlist = create_vertical_plane_xfixed(width / 2, -width / 2, cur_height + step_height, cur_height,
                                                               cur_length, label=label)
         point_list_list.append(cur_vertical_pointlist)
         total_num_points += cur_vertical_pointlist.shape[0]
-        cur_height += height
+        cur_height += step_height
 
-        cur_horizontal_pointlist = create_horizontal_plane(cur_length + length, cur_length, width / 2, -width / 2,
+        cur_horizontal_pointlist = create_horizontal_plane(cur_length + step_length, cur_length, width / 2, -width / 2,
                                                            cur_height, label=label)
         point_list_list.append(cur_horizontal_pointlist)
         total_num_points += cur_horizontal_pointlist.shape[0]
-        cur_length += length
+        cur_length += step_length
 
     if label:
         point_list = np.zeros((total_num_points, 4))
@@ -336,8 +354,8 @@ def create_stairs(
         point_list[pointer:pointer + list.shape[0], :] = list
         pointer += list.shape[0]
 
-    if visualization:
-        visualize_pointlist(point_list, scale=(1, 1, 1))
+    if visualize:
+        visualize_pc_no_color(point_list[:, 0:3], scale=(1, 1, 1))
 
     return point_list
 
@@ -345,7 +363,7 @@ def create_stairs(
 def add_noise_pointlist(
         point_list: np.ndarray,
         std: float,
-        visualization: Optional[bool] = False
+        visualize: Optional[bool] = False
 ) -> np.ndarray:
     num_data = point_list.shape[0]
     noise = np.random.normal(0, std, num_data * 3)
@@ -355,8 +373,8 @@ def add_noise_pointlist(
         point_list[i, 1] += noise[3 * i + 1]
         point_list[i, 2] += noise[3 * i + 2]
 
-    if visualization:
-        visualize_pointlist(point_list, scale=(1, 1, 1))
+    if visualize:
+        visualize_pc_no_color(point_list[:, 0:3], scale=(1, 1, 1))
 
     return point_list
 
@@ -422,28 +440,19 @@ def translate_pointlist(
     return point_list
 
 
-def visualize_pointlist(point_list: np.ndarray, scale: Optional[tuple] = (1, 1, 1)) -> None:
-    ax = plt.figure().add_subplot(111, projection='3d')
-    ax.scatter(point_list[:, 0], point_list[:, 1], point_list[:, 2])
-    plt.gca().set_box_aspect(scale)
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.show()
-
-
 if __name__ == '__main__':
-    # point_list = create_horizontal_plane(0.5, -0.5, -0.2, -0.4, 0.3, label=True, visualization=True)
-    # point_list = create_vertical_plane_xfixed(0.5, -0.5, -0.2, -0.4, 0.3, label=True, visualization=True)
-    # point_list = create_vertical_plane_yfixed(0.5, -0.5, -0.2, -0.4, 0.3, label=True, visualization=True)
-    # point_list = create_sloping_plane_xfixed(0.5, -0.5, -0.2, -0.4, 0.3, -0.3, label=True, visualization=True)
-    # point_list = create_sloping_plane_yfixed(0.5, -0.5, -0.2, -0.4, 0.3, -0.3, label=True, visualization=True)
-    point_list = create_sphere(0.5, 0.5, 0.5, 0.5, label=True, visualization=True)
+    # point_list = create_horizontal_plane(0.5, -0.5, -0.2, -0.4, 0.3, label=True, visualize=True)
+    # point_list = create_vertical_plane_xfixed(0.5, -0.5, -0.2, -0.4, 0.3, label=True, visualize=True)
+    # point_list = create_vertical_plane_yfixed(0.5, -0.5, -0.2, -0.4, 0.3, label=True, visualize=True)
+    # point_list = create_sloping_plane_xfixed(0.5, -0.5, -0.2, -0.4, 0.3, -0.3, label=True, visualize=True)
+    # point_list = create_sloping_plane_yfixed(0.5, -0.5, -0.2, -0.4, 0.3, -0.3, label=True, visualize=True)
+    # point_list = create_sphere(0.5, 0.5, 0.5, 0.5, label=True, visualize=True)
 
-    # point_list = create_box(1, 1, 0.5, label=True, visualization=True)
-    # point_list = create_stairs(4, 0.3, 1, 0.25, label=True, visualization=True)
+    # point_list = create_box(1, 1, 0.5, label=True, visualize=True)
+    point_list = create_stair(4, 0.3, 1, 0.25, init_height=0.2, label=True, visualize=True)
 
     # point_list = add_noise_pointlist(point_list, 0.01)
     # point_list = rotate_pointlist(point_list, np.pi / 6, axis_x=1, axis_y=0, axis_z=0)
     # point_list = translate_pointlist(point_list, 1, 1, 1)
 
-    visualize_pointlist(point_list)
+    visualize_pc_no_color(point_list[:, 0:3])

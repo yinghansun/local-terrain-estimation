@@ -9,7 +9,7 @@ from typing import Optional, Union
 import matplotlib.pyplot as plt
 import numpy as np
 
-from basic_shapes_utils import PlaneLabel, create_stairs
+# from basic_shapes_utils import PlaneLabel, create_stair
 
 
 def visualize_pc_no_color(
@@ -101,7 +101,7 @@ if __name__ == '__main__':
         PlaneLabel.vertical.label: PlaneLabel.vertical.color
     }
 
-    stair1 = create_stairs(num_steps=7, length=0.128, width=1.2, height=0.125, label=True)
+    stair1 = create_stair(num_steps=7, step_length=0.128, width=1.2, step_height=0.125, label=True)
 
     visualize_pc_no_color(stair1[:, 0:3])
     visualize_pc_color(stair1, color_dict)

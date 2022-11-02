@@ -68,7 +68,7 @@ def preprocess_data(
     selected_points[:, 1] = selected_points[:, 1] - center[1]
     current_points[:, 0:3] = selected_points
 
-    return current_points, ids
+    return current_points[:, 0:3], ids
 
 
 def load_model(

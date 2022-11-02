@@ -1,0 +1,90 @@
+import os
+from typing import List, Optional
+
+import numpy as np
+from torch.utils.data import Dataset
+
+from eval_utils import preprocess_data
+from hyper_paras import *
+
+
+class GCN3DDataInterface(Dataset):
+
+    def __init__(
+        self, 
+        root_path: str, 
+        num_classes: int,
+        usage: str,
+        num_points: Optional[int] = NUM_POINTS,
+    ) -> None:
+        '''A point cloud dataloader for Pytorch.
+
+        Attributes
+        ----------
+        root_path: str
+            root path for dataset.
+        num_classes: int
+            total number of classes.
+        usage: str, {'train', 'test'}
+            identify the usage of the data (for training or testing).
+        num_points:
+            number of points of one data after pre-processing.
+        '''
+        super().__init__()
+
+        assert usage in root_path
+
+        self.__num_points = num_points
+
+        data_list: List[np.ndarray] = []
+        for file_name in list(os.walk(root_path))[0][2]:
+            data_list.append(np.load(root_path + file_name))
+
+        self.__points_list: List[np.ndarray] = []
+        self.__labels_list: List[np.ndarray] = []
+        self.__coor_min, self.__coor_max = [], []
+        points_counter_list = []  # record number of points for each data
+        labelcounter = np.zeros(num_classes)
+
+        for data in data_list:
+            points, labels = data[:, 0:3], data[:, 3]    # x, y, z, label
+            self.__points_list.append(points)
+            self.__labels_list.append(labels)
+            points_counter_list.append(data.shape[0])
+
+            # print(data.shape[0])
+            tmp, _ = np.histogram(labels, range(0, num_classes+1))
+            labelcounter += tmp
+            # print(tmp)
+
+            coor_min = np.amin(points, axis=0)[:3]
+            coor_max = np.amax(points, axis=0)[:3]
+            self.__coor_min.append(coor_min)
+            self.__coor_max.append(coor_max)
+
+        labelcounter = labelcounter.astype(np.float32)
+        labelweights = labelcounter / np.sum(labelcounter)
+        # print(labelweights)
+        self.labelweights = np.power(np.amax(labelweights) / labelweights, 1 / 3.0)
+
+        print("Totally {} samples in {} set.".format(len(self.__points_list), usage))
+
+    def __getitem__(self, idx):
+        data_idx = idx
+        points = self.__points_list[data_idx]
+        labels = self.__labels_list[data_idx]
+
+        points = torch.FloatTensor(points)
+        labels = torch.LongTensor(labels)
+
+        current_points, ids = preprocess_data(points)
+        current_labels = labels[ids]
+
+        return current_points, current_labels
+
+    def __len__(self):
+        return len(self.__points_list)
+
+    @property
+    def num_points(self):
+        return self.__num_points

@@ -1,6 +1,6 @@
 import torch
 
-NUM_CLASSES = 3
+NUM_CLASSES = 2
 NUM_POINTS = 1024
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -13,7 +13,8 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 NUM_WORKERS = 10
 
 NUM_EPOCH = 32
-BATCH_SIZE = 16
+# BATCH_SIZE = 16
+BATCH_SIZE = 4
 LEARNING_RATE = 0.001
 DECAY_RATE = 1e-4
 LEARNING_RATE_CLIP = 1e-5

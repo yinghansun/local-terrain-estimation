@@ -91,12 +91,13 @@ def main():
 
     train_loss_list = []
     train_acc_list = []
-    test_loss_list = []
-    test_acc_list = []
+    # test_loss_list = []
+    # test_acc_list = []
 
     eval_idx = 0
 
     for epoch in range(NUM_EPOCH):
+        print('epoch {} / {}:'.format(epoch+1, NUM_EPOCH))
         lr = max(LEARNING_RATE * (LEARNING_RATE_DECAY ** (epoch // MOMENTUM_DECCAY_STEP)), LEARNING_RATE_CLIP)
 
         momentum = MOMENTUM_ORIGINAL * (MOMENTUM_DECCAY ** (epoch // MOMENTUM_DECCAY_STEP))
@@ -149,9 +150,9 @@ def main():
             total_seen = 0
             loss_sum = 0
             labelweights = np.zeros(NUM_CLASSES)
-            total_seen_class = [0 for _ in range(NUM_CLASSES)]
-            total_correct_class = [0 for _ in range(NUM_CLASSES)]
-            total_iou_deno_class = [0 for _ in range(NUM_CLASSES)]
+            # total_seen_class = [0 for _ in range(NUM_CLASSES)]
+            # total_correct_class = [0 for _ in range(NUM_CLASSES)]
+            # total_iou_deno_class = [0 for _ in range(NUM_CLASSES)]
             classifier = classifier.eval()
 
             for i, (points, labels) in enumerate(test_data_loader):
@@ -169,27 +170,29 @@ def main():
                 loss_sum += loss
                 pred_val = np.argmax(pred_val, 2)
                 correct = np.sum((pred_val == batch_label))
+                false = np.sum((pred_val != batch_label))
                 total_correct += correct
-                total_seen += (BATCH_SIZE * train_set.num_points)
+                seen = correct + false
+                total_seen += seen
                 tmp, _ = np.histogram(batch_label, range(NUM_CLASSES + 1))
                 labelweights += tmp
 
-                for l in range(NUM_CLASSES):
-                    total_seen_class[l] += np.sum((batch_label == l))
-                    total_correct_class[l] += np.sum((pred_val == l) & (batch_label == l))
-                    total_iou_deno_class[l] += np.sum(((pred_val == l) | (batch_label == l)))
+                # for l in range(NUM_CLASSES):
+                #     total_seen_class[l] += np.sum((batch_label == l))
+                #     total_correct_class[l] += np.sum((pred_val == l) & (batch_label == l))
+                #     total_iou_deno_class[l] += np.sum(((pred_val == l) | (batch_label == l)))
 
             labelweights = labelweights.astype(np.float32) / np.sum(labelweights.astype(np.float32))
-            mIoU = np.mean(np.array(total_correct_class) / (np.array(total_iou_deno_class, dtype=np.float) + 1e-6))
+            # mIoU = np.mean(np.array(total_correct_class) / (np.array(total_iou_deno_class, dtype=np.float) + 1e-6))
 
-            test_loss_list.append(loss_sum / float(num_batches))
-            test_acc_list.append(total_correct / float(total_seen))
+            # test_loss_list.append(loss_sum / float(num_batches))
+            # test_acc_list.append(total_correct / float(total_seen))
 
             print('eval mean loss: %f' % (loss_sum / float(num_batches)))
-            print('eval point avg class IoU: %f' % (mIoU))
+            # print('eval point avg class IoU: %f' % (mIoU))
             print('eval point accuracy: %f' % (total_correct / float(total_seen)))
-            print('eval point avg class acc: %f' % (
-                np.mean(np.array(total_correct_class) / (np.array(total_seen_class, dtype=np.float) + 1e-6))))
+            # print('eval point avg class acc: %f' % (
+            #     np.mean(np.array(total_correct_class) / (np.array(total_seen_class, dtype=np.float) + 1e-6))))
 
             torch.save(classifier.state_dict(), save_path + '/para_dic' + str(eval_idx) + '.pth')
             eval_idx += 1

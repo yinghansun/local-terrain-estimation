@@ -138,7 +138,7 @@ try:
         for i in range(height):
             for j in range(width):
                 cur_depth = 0.001 * depth_image[i][j]
-                if cur_depth != 0 and cur_depth <= 1:
+                if cur_depth != 0 and cur_depth <= 2:
                     # cur_pixel_coordinate = np.array([[i], [j], [1]])
                     # cur_camera_coordinate_norm = Kinv @ cur_pixel_coordinate
                     # cur_camera_coordinate = 0.001 * depth_image[i][j] * cur_camera_coordinate_norm

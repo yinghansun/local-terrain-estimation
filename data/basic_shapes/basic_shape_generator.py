@@ -11,6 +11,14 @@ from data_augmentation_utils import *
 from simple_visualizer import visualize_pc_no_color
 
 
+def generate_vertical_plane(
+    num_planes: int,
+):
+    '''
+    '''
+    
+
+
 def generate_boxes_only(
     num_boxes: int,
     width_range: Optional[tuple] = (0.2, 2.0),
@@ -53,9 +61,9 @@ def generate_boxes_only(
         box_i = create_box(length=length, width=width, height=height, label=True)
         angle = np.random.rand() * 3.1415926
         box_i = rotate_pointlist(box_i, angle)
-        box_i = add_noise_pointlist(box_i, 0.05)
+        box_i = add_noise_pointlist(box_i, 0.01)
         box_i = remove_random_patches(box_i)
-        box_i = add_random_clusters(box_i)
+        # box_i = add_random_clusters(box_i)
 
         print('Successfully create box with length = ' + \
             '{}, width = {}, height = {}.'.format(length, width, height))
@@ -106,16 +114,13 @@ def generate_boxes_on_plane(
             (height_range[1] - height_range[0]) * np.random.rand()
 
         plane = create_horizontal_plane(1.5, -1.5, 1.5, -1.5, 0, label=True)
-        print(plane.shape)
         box_i = create_box(length=length, width=width, height=height, center=np.array([0, 0, height/2]), label=True)
-        print(box_i.shape)
         data_i = np.vstack((plane, box_i))
-        print(data_i.shape)
         angle = np.random.rand() * 3.1415926
-        # data_i = rotate_pointlist(data_i, angle)
-        # data_i = add_noise_pointlist(data_i, 0.05)
-        # data_i = remove_random_patches(data_i)
-        # data_i = add_random_clusters(data_i)
+        data_i = rotate_pointlist(data_i, angle)
+        data_i = add_noise_pointlist(data_i, 0.01)
+        data_i = remove_random_patches(data_i)
+        data_i = add_random_clusters(data_i)
 
         print('Successfully create box with length = ' + \
             '{}, width = {}, height = {}.'.format(length, width, height))
@@ -129,7 +134,7 @@ def generate_boxes_on_plane(
 def generate_stairs_only(
     num_stairs: int,
     base_height: Optional[float] = 0.,
-    num_steps_range: Optional[tuple] = (2, 10),
+    num_steps_range: Optional[tuple] = (3, 10),
     step_length_range: Optional[tuple] = (0.15, 0.5),
     width_range: Optional[tuple] = (0.2, 2.0),
     step_height_range: Optional[tuple] = (0.08, 0.25),
@@ -179,9 +184,9 @@ def generate_stairs_only(
         stair_i = rotate_pointlist(stair_i, angle)
         # stair_i = disturb_position(stair_i)
         # stair_i = disturb_height(stair_i)
-        stair_i = add_noise_pointlist(stair_i, 0.02)
+        stair_i = add_noise_pointlist(stair_i, 0.01)
         stair_i = remove_random_patches(stair_i)
-        stair_i = add_random_clusters(stair_i)
+        # stair_i = add_random_clusters(stair_i)
 
         print('Successfully create stair with width = ' + \
             '{}, step length = {}, step height = {}, '.format(width, step_length, step_height) + \
@@ -207,11 +212,13 @@ if __name__ == '__main__':
         os.mkdir(test_path)
 
     # generate_boxes_only(10, save=False, visualize=True)
-    # generate_boxes_only(100, save=True, root_path=train_path)
-    # generate_boxes_only(100, save=True, root_path=test_path)
+    generate_boxes_only(200, save=True, root_path=train_path)
+    generate_boxes_only(200, save=True, root_path=test_path)
 
-    generate_boxes_on_plane(10, save=False, visualize=True)
+    # # generate_boxes_on_plane(10, save=False, visualize=True)
+    # generate_boxes_on_plane(300, save=True, root_path=train_path)
+    # generate_boxes_on_plane(300, save=True, root_path=test_path)
 
     # generate_stairs_only(10, save=False, visualize=True)
-    # generate_stairs_only(100, save=True, root_path=train_path)
-    # generate_stairs_only(100, save=True, root_path=test_path)
+    generate_stairs_only(200, save=True, root_path=train_path)
+    generate_stairs_only(200, save=True, root_path=test_path)

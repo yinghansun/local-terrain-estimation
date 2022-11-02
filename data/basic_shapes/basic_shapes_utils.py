@@ -14,14 +14,14 @@ from simple_visualizer import visualize_pc_no_color
 
 
 def create_horizontal_plane(
-        x_upper: float,
-        x_lower: float,
-        y_upper: float,
-        y_lower: float,
-        z: float,
-        scale: Optional[float] = 0.03,
-        label: Optional[bool] = False,
-        visualize: Optional[bool] = False
+    x_upper: float,
+    x_lower: float,
+    y_upper: float,
+    y_lower: float,
+    z: float,
+    scale: Optional[float] = 0.01,
+    label: Optional[bool] = False,
+    visualize: Optional[bool] = False
 ) -> np.ndarray:
     num_points_x = int((x_upper - x_lower) / scale)
     num_points_y = int((y_upper - y_lower) / scale)
@@ -49,14 +49,14 @@ def create_horizontal_plane(
 
 
 def create_vertical_plane_xfixed(
-        y_upper: float,
-        y_lower: float,
-        z_upper: float,
-        z_lower: float,
-        x: float,
-        scale: Optional[float] = 0.03,
-        label: Optional[bool] = False,
-        visualize: Optional[bool] = False
+    y_upper: float,
+    y_lower: float,
+    z_upper: float,
+    z_lower: float,
+    x: float,
+    scale: Optional[float] = 0.01,
+    label: Optional[bool] = False,
+    visualize: Optional[bool] = False
 ) -> np.ndarray:
     num_points_y = int((y_upper - y_lower) / scale)
     num_points_z = int((z_upper - z_lower) / scale)
@@ -84,14 +84,14 @@ def create_vertical_plane_xfixed(
 
 
 def create_vertical_plane_yfixed(
-        x_upper: float,
-        x_lower: float,
-        z_upper: float,
-        z_lower: float,
-        y: float,
-        scale: Optional[float] = 0.03,
-        label: Optional[bool] = False,
-        visualize: Optional[bool] = False
+    x_upper: float,
+    x_lower: float,
+    z_upper: float,
+    z_lower: float,
+    y: float,
+    scale: Optional[float] = 0.03,
+    label: Optional[bool] = False,
+    visualize: Optional[bool] = False
 ) -> np.ndarray:
     num_points_x = int((x_upper - x_lower) / scale)
     num_points_z = int((z_upper - z_lower) / scale)
@@ -119,15 +119,15 @@ def create_vertical_plane_yfixed(
 
 
 def create_sloping_plane_xfixed(
-        x_upper: float,
-        x_lower: float,
-        y_upper: float,
-        y_lower: float,
-        z_upper: float,
-        z_lower: float,
-        scale: Optional[float] = 0.03,
-        label: Optional[bool] = False,
-        visualize: Optional[bool] = False
+    x_upper: float,
+    x_lower: float,
+    y_upper: float,
+    y_lower: float,
+    z_upper: float,
+    z_lower: float,
+    scale: Optional[float] = 0.03,
+    label: Optional[bool] = False,
+    visualize: Optional[bool] = False
 ) -> np.ndarray:
     """Create a sloping plane about x-axis by given two vertex:
     (x_upper, y_upper, z_upper), (x_lower, y_lower, z_lower)
@@ -165,15 +165,15 @@ def create_sloping_plane_xfixed(
 
 
 def create_sloping_plane_yfixed(
-        x_upper: float,
-        x_lower: float,
-        y_upper: float,
-        y_lower: float,
-        z_upper: float,
-        z_lower: float,
-        scale: Optional[float] = 0.03,
-        label: Optional[bool] = False,
-        visualize: Optional[bool] = False
+    x_upper: float,
+    x_lower: float,
+    y_upper: float,
+    y_lower: float,
+    z_upper: float,
+    z_lower: float,
+    scale: Optional[float] = 0.03,
+    label: Optional[bool] = False,
+    visualize: Optional[bool] = False
 ) -> np.ndarray:
     """Create a sloping plane about y-axis by given two vertex:
         (x_upper, y_upper, z_upper),(x_lower, y_lower, z_lower)
@@ -211,12 +211,12 @@ def create_sloping_plane_yfixed(
 
 
 def create_sphere(
-        r: float,
-        centre_x: float,
-        centre_y: float,
-        centre_z: float,
-        label: Optional[bool] = False,
-        visualize: Optional[bool] = False
+    r: float,
+    centre_x: float,
+    centre_y: float,
+    centre_z: float,
+    label: Optional[bool] = False,
+    visualize: Optional[bool] = False
 ):
     """Create a sphere (base on polar coordinates)
     Paras:
@@ -254,12 +254,12 @@ def create_sphere(
 
 
 def create_box(
-        length: float,
-        width: float,
-        height: float,
-        center: Optional[np.ndarray] = np.zeros(3),
-        label: Optional[bool] = False,
-        visualize: Optional[bool] = False
+    length: float,
+    width: float,
+    height: float,
+    center: Optional[np.ndarray] = np.zeros(3),
+    label: Optional[bool] = False,
+    visualize: Optional[bool] = False
 ) -> np.ndarray:
     z_top = center[2] + height / 2
     z_bottom = center[2] - height / 2
@@ -296,13 +296,13 @@ def create_box(
 
 
 def create_stair(
-        num_steps: int,
-        step_length: float,
-        width: float,
-        step_height: float,
-        init_height: Optional[float] = 0.,
-        label: Optional[bool] = False,
-        visualize: Optional[bool] = False
+    num_steps: int,
+    step_length: float,
+    width: float,
+    step_height: float,
+    init_height: Optional[float] = 0.,
+    label: Optional[bool] = False,
+    visualize: Optional[bool] = False
 ) -> np.ndarray:
     '''Create a stair by given parameters.
 
@@ -361,9 +361,9 @@ def create_stair(
 
 
 def add_noise_pointlist(
-        point_list: np.ndarray,
-        std: float,
-        visualize: Optional[bool] = False
+    point_list: np.ndarray,
+    std: float,
+    visualize: Optional[bool] = False
 ) -> np.ndarray:
     num_data = point_list.shape[0]
     noise = np.random.normal(0, std, num_data * 3)
@@ -380,11 +380,11 @@ def add_noise_pointlist(
 
 
 def rotate_pointlist(
-        point_list: np.ndarray,
-        theta: float,
-        axis_x: Optional[int] = 0,
-        axis_y: Optional[int] = 0,
-        axis_z: Optional[int] = 1
+    point_list: np.ndarray,
+    theta: float,
+    axis_x: Optional[int] = 0,
+    axis_y: Optional[int] = 0,
+    axis_z: Optional[int] = 1
 ) -> np.ndarray:
     """Rotate a point list about z-axis by a given angle theta
     Paras:
@@ -450,7 +450,7 @@ if __name__ == '__main__':
 
     # point_list = create_box(1, 1, 0.5, label=True, visualize=True)
     point_list = create_stair(4, 0.3, 1, 0.25, init_height=0.2, label=True, visualize=True)
-
+    print(point_list.shape)
     # point_list = add_noise_pointlist(point_list, 0.01)
     # point_list = rotate_pointlist(point_list, np.pi / 6, axis_x=1, axis_y=0, axis_z=0)
     # point_list = translate_pointlist(point_list, 1, 1, 1)

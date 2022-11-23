@@ -8,3 +8,6 @@
 *dataset
 *results
 *.npy
+
+# virtual environment
+/local-ter-est-env

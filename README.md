@@ -25,10 +25,28 @@ $ sudo apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cud
 ~~~
 
 
-### Set up the environment
+<!-- ### Set up the environment
 ~~~
 $ conda create -n local-ter-est python=3.6
 $ conda activate local-ter-est
 $ pip install pyrealsense2
 $ pip install opencv-python
-~~~
+~~~ -->
+
+### Set Up
+1. Install virtualenv: 
+    ~~~
+    $ sudo apt install python3-virtualenv
+    ~~~
+2. create a virtual environment:
+    ~~~
+    $ virtualenv --python /usr/bin/python3.8 local-ter-est-env
+    ~~~
+3. activate the virtual environment:
+    ~~~
+    $ source ~/Documents/local-terrain-estimation/local-ter-est-env/bin/activate
+    ~~~
+4. install the dependences:
+    ~~~
+    $ pip install -r requirements.txt
+    ~~~

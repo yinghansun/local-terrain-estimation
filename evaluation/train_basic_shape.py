@@ -51,9 +51,9 @@ def weights_init(m):
 def main():
     cur_path = os.path.dirname(os.path.abspath(__file__))
     train_root_path = cur_path + '/../data/basic_shapes/dataset/train/'
-    train_set = PointcloudDataset(train_root_path, NUM_CLASSES, 'train')
+    train_set = PointcloudDataset(train_root_path, NUM_CLASSES, 'train', model='pointnet++')
     test_root_path = cur_path + '/../data/basic_shapes/dataset/test/'
-    test_set = PointcloudDataset(test_root_path, NUM_CLASSES, 'test')
+    test_set = PointcloudDataset(test_root_path, NUM_CLASSES, 'test', model='pointnet++')
 
     train_data_loader = torch.utils.data.DataLoader(
         train_set,
@@ -75,7 +75,6 @@ def main():
     )
 
     label_weights = torch.Tensor(train_set.labelweights).to(DEVICE)
-
 
     classifier = PointNet2(NUM_CLASSES).to(DEVICE)
     classifier.apply(inplace_relu)
@@ -120,6 +119,7 @@ def main():
             points = points.transpose(2, 1)
 
             seg_pred, trans_feat = classifier(points)
+            print(seg_pred.shape)
             seg_pred = seg_pred.contiguous().view(-1, NUM_CLASSES)
 
             batch_label = labels.view(-1, 1)[:, 0].cpu().data.numpy()
@@ -132,8 +132,11 @@ def main():
             # torch.nn.utils.clip_grad_norm_(classifier.parameters(), max_norm=10, norm_type=2)
             optimizer.step()
 
+            print(seg_pred.shape)
             pred_choice = seg_pred.cpu().data.max(1)[1].numpy()
             correct = np.sum(pred_choice == batch_label)
+            print(pred_choice.shape)
+            print(batch_label.shape)
             total_correct += correct
             total_seen += (BATCH_SIZE * train_set.num_points)
             loss_sum += loss

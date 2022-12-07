@@ -124,6 +124,8 @@ def main():
 
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)
 
+    eval_idx = 0
+
     record("*****************************************")
     # record("Hyper-parameters: {}".format(self.args_info))
     record("Model parameter number: {}".format(parameter_number(model)))
@@ -136,6 +138,7 @@ def main():
         train_loss = 0
         train_iou_table = IouTable()
 
+        num_batches = len(train_data_loader)
         total_correct = 0
         total_seen = 0
 
@@ -144,9 +147,8 @@ def main():
 
             points = points.float().to(DEVICE)
             labels = torch.squeeze(labels.long(), dim=1).to(DEVICE)
-
-            print(labels.shape)
-
+            # print(points.shape)
+            # print(labels.shape)
             out = model(points)
 
             optimizer.zero_grad()
@@ -154,19 +156,44 @@ def main():
             loss.backward()
             optimizer.step()
 
+            out = out.contiguous().view(-1, NUM_CLASSES)
+
             train_loss += loss.item()
-            record('training loss: {}'.format(train_loss))
-            pred = torch.max(out, 2)[1].contiguous().view(-1, NUM_CLASSES)
-            # print(pred)
+            record('training loss: {}'.format(loss.item()))
+            # pred = torch.max(out, 2)[1].contiguous().view(-1, NUM_CLASSES)
+            # print(out.shape)
+            pred_choice = out.cpu().data.max(1)[1].numpy()
 
             batch_label = labels.view(-1, 1)[:, 0].cpu().data.numpy()
-            pred_choice = pred.cpu().data.max(1)[1].numpy()
+            # pred_choice = pred.cpu().data.max(1)[1].numpy()
             correct = np.sum(pred_choice == batch_label)
             total_correct += correct
             total_seen += (BATCH_SIZE * train_set.num_points)
-            
+
             record('Training accuracy: %f' % (total_correct / float(total_seen)))
 
+        with torch.no_grad():
+            num_batches = len(test_data_loader)
+            total_correct = 0
+            total_seen = 0
+            model = model.eval()
+
+            for i, (points, labels) in enumerate(train_data_loader):
+                points = points.float().to(DEVICE)
+                labels = torch.squeeze(labels.long(), dim=1).to(DEVICE)
+                out = model(points)
+
+                out = out.contiguous().view(-1, NUM_CLASSES)
+                pred_choice = out.cpu().data.max(1)[1].numpy()
+                batch_label = labels.view(-1, 1)[:, 0].cpu().data.numpy()
+                correct = np.sum(pred_choice == batch_label)
+                total_correct += correct
+                total_seen += (BATCH_SIZE * train_set.num_points)
+
+            record('test accuracy: %f' % (total_correct / float(total_seen)))
+
+            torch.save(model.state_dict(), save_path + '/para_dic' + str(eval_idx) + '.pth')
+            
 
 if __name__ == '__main__':
     main()

@@ -16,6 +16,7 @@ class PointcloudDataset(Dataset):
         num_classes: int,
         usage: str,
         num_points: Optional[int] = NUM_POINTS,
+        model: Optional[str] = '3dgcn'
     ) -> None:
         '''A point cloud dataloader for Pytorch.
 
@@ -35,6 +36,7 @@ class PointcloudDataset(Dataset):
         assert usage in root_path
 
         self.__num_points = num_points
+        self.__model = model
 
         data_list: List[np.ndarray] = []
         for file_name in list(os.walk(root_path))[0][2]:
@@ -74,7 +76,7 @@ class PointcloudDataset(Dataset):
         points = self.__points_list[data_idx]
         labels = self.__labels_list[data_idx]
 
-        current_points, ids = preprocess_data(points)
+        current_points, ids = preprocess_data(points, model=self.__model)
         current_labels = labels[ids]
 
         return current_points, current_labels

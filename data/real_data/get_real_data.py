@@ -1,3 +1,4 @@
+import os
 import cv2
 import math
 import numpy as np
@@ -68,6 +69,19 @@ class AppState:
         return self.translation + np.array((0, 0, self.distance), dtype=np.float32)
 
 
+def create_data_folder():
+    data_idx = 0
+    cur_path = os.path.dirname(__file__)
+    while True:
+        folder_path = os.path.join(cur_path, str(data_idx))
+        if os.path.exists(folder_path):
+            data_idx += 1
+        else:
+            break
+    folder_path = os.path.join(cur_path, str(data_idx))
+    os.mkdir(folder_path)
+    return folder_path
+
 state = AppState()
 
 
@@ -116,8 +130,6 @@ K = np.array([
 ])
 Kinv = np.linalg.inv(K)
 # print(Kinv @ np.array([[400], [800], [1]]))
-
-data_idx = 0
 
 try:
     while True:
@@ -174,9 +186,20 @@ try:
             break
         
         if key == ord("e"):
-            np.save('./data/real_data/data' + str(data_idx) + '.npy', camera_coordinates)
+            folder_path = create_data_folder()
+
+            rgb_path = os.path.join(folder_path, 'rgb.png')
+            if depth_colormap_dim != color_colormap_dim:
+                cv2.imwrite(rgb_path, resized_color_image)
+            else:
+                cv2.imwrite(rgb_path, color_image)
+            
+            depth_path = os.path.join(folder_path, 'depth.png')
+            cv2.imwrite(depth_path, depth_colormap)
+
+            camera_coordinates_path = os.path.join(folder_path, 'camera_coordinates_cliped.npy')
+            np.save(camera_coordinates_path, camera_coordinates)
             # np.save('./data/real_data/data' + str(data_idx) + '.npy', points)
-            data_idx += 1
 
 finally:
 
